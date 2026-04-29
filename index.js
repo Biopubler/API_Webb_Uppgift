@@ -40,6 +40,25 @@ const COLUMNS = ["firstname", "lastname", "userId", "passwd"]; // ÄNDRA TILL NA
 
 // grundläggande exempel - returnera en databastabell som JSON
 app.get("/users", function (req, res) {
+   let authHeader = req.headers["authorization"];
+  if (authHeader === undefined) {
+    // skicka lämplig HTTP-status om auth-header saknas, en “400 någonting”
+    res.sendStatus(400); // "Bad request"
+    return;
+  }
+  let token = authHeader.slice(7); // tar bort "BEARER " från headern.
+  // nu finns den inskickade token i variabeln token
+  console.log(token);
+
+  // avkoda token
+  let decoded;
+  try {
+    decoded = jwt.verify(token, secret);
+  } catch (err) {
+    console.log(err); //Logga felet, för felsökning på servern.
+    res.status(401).send("Invalid auth token");
+    return;
+  }
   let sql = "SELECT * FROM users"; // ÄNDRA TILL NAMN PÅ ER EGEN TABELL (om den heter något annat än "users")
   let condition = createCondition(req.query); // output t.ex. " WHERE lastname='Rosencrantz'"
   console.log(sql + condition); // t.ex. SELECT * FROM users WHERE lastname="Rosencrantz"
@@ -68,7 +87,29 @@ let createCondition = function (query) {
 };
 
 // route-parameter, dvs. filtrera efter ID i URL:en
+
+
+
 app.get("/users/:id", function (req, res) {
+   let authHeader = req.headers["authorization"];
+  if (authHeader === undefined) {
+    // skicka lämplig HTTP-status om auth-header saknas, en “400 någonting”
+    res.sendStatus(400); // "Bad request"
+    return;
+  }
+  let token = authHeader.slice(7); // tar bort "BEARER " från headern.
+  // nu finns den inskickade token i variabeln token
+  console.log(token);
+
+  // avkoda token
+  let decoded;
+  try {
+    decoded = jwt.verify(token, secret);
+  } catch (err) {
+    console.log(err); //Logga felet, för felsökning på servern.
+    res.status(401).send("Invalid auth token");
+    return;
+  }
   // Värdet på id ligger i req.params
   let sql = "SELECT * FROM users WHERE id=" + req.params.id;
   console.log(sql);
@@ -80,9 +121,29 @@ app.get("/users/:id", function (req, res) {
       res.sendStatus(404); // 404=not found
     }
   });
+
 });
 
 app.post("/users", function (req, res) {
+  let authHeader = req.headers["authorization"];
+  if (authHeader === undefined) {
+    // skicka lämplig HTTP-status om auth-header saknas, en “400 någonting”
+    res.sendStatus(400); // "Bad request"
+    return;
+  }
+  let token = authHeader.slice(7); // tar bort "BEARER " från headern.
+  // nu finns den inskickade token i variabeln token
+  console.log(token);
+
+  // avkoda token
+  let decoded;
+  try {
+    decoded = jwt.verify(token, secret);
+  } catch (err) {
+    console.log(err); //Logga felet, för felsökning på servern.
+    res.status(401).send("Invalid auth token");
+    return;
+  }
   if (!req.body.userId) {
     res.status(400).send("userId required!");
     return;
@@ -156,6 +217,25 @@ function isValidUserData(body) {
 
 // PUT-ROUTE
 app.put("/users/:id", function (req, res) {
+  let authHeader = req.headers["authorization"];
+  if (authHeader === undefined) {
+    // skicka lämplig HTTP-status om auth-header saknas, en “400 någonting”
+    res.sendStatus(400); // "Bad request"
+    return;
+  }
+  let token = authHeader.slice(7); // tar bort "BEARER " från headern.
+  // nu finns den inskickade token i variabeln token
+  console.log(token);
+
+  // avkoda token
+  let decoded;
+  try {
+    decoded = jwt.verify(token, secret);
+  } catch (err) {
+    console.log(err); //Logga felet, för felsökning på servern.
+    res.status(401).send("Invalid auth token");
+    return;
+  }
   //kod här för att hantera anrop…
   // kolla först att all data som ska finnas finns i request-body
   // i ett PUT-anrop måste hela "raden" finnas med, alltså alla attribut för en användare!
